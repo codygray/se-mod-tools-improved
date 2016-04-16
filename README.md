@@ -14,6 +14,7 @@ This is a user script which moves most of the options *out* of the mod menu and 
 - Adds options to purge all and move to chat at the bottom right of the comment list.
 - The **purge all** options will spawn a confirmation popup before immediately completing the action.
 - If there are deleted comments on the post, a "*y* deleted" option will appear to the right of the "*x* more comments" option, and will show all deleted comments upon clicking.
+- Adds a "remove bounty" option at the bottom of a bounty notice, which will spawn a confirmation popup before immediately removing the bounty from the question.
 
 **Note:** The moderator-only actions will appear in red for indication.
 
