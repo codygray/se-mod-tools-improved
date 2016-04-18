@@ -37,7 +37,7 @@ $(document).ready(function(e) {
             var hasBounty = ($(this).find('.bounty-notification').length > 0);
 
             var modLink = postMenu.find('.post-moderator-link').detach().addClass('red-mod-link');
-            
+
             var protectLink, convertLink, lockLink, mergeLink, noticeLink, wikiLink;
 
             postMenu.find('.deleted-post').removeClass('deleted-post'); // That styling just looks dumb
@@ -132,7 +132,11 @@ $(document).ready(function(e) {
                 $('.bounty-notification .question-status.bounty').append(bountyLink);
             }
         });
-
+        $('.unlock-post-link').click(function() {
+           if (window.confirm(getActionDescription('unlock', getPostType($(this))) + 'Are you sure you want to complete this action?')) {
+               completeBasicAction('unlock', $(this), false);
+           }
+        });
         $('.wiki-post-link').click(function() {
             if (window.confirm(getActionDescription('wikify', getPostType($(this))) + 'Are you sure you want to complete this action?')) {
                 completeBasicAction('wikify', $(this), false);
@@ -230,7 +234,7 @@ $(document).ready(function(e) {
             }
             return description;
         };
-        
+
         window.getSubOptions = function (actionName, postType) {
             var postModMenu = checkModMenu(postType);
             var suboptions = '';
