@@ -2,7 +2,7 @@
 // @name        Stack Exchange Moderator Tools Improved
 // @description Moves the info from the post issues box and moves options out of the mod menu for easier access.
 // @author      animuson
-// @version     0.1
+// @version     0.1.1
 // @namespace   https://github.com/animuson
 // @grant       none
 // @match       *://*.stackexchange.com/*
