@@ -2,11 +2,12 @@
 // @name        Stack Exchange Moderator Tools Improved
 // @description Moves the info from the post issues box and moves options out of the mod menu for easier access.
 // @author      animuson
-// @version     0.1.1
+// @version     0.1.2
 // @namespace   https://github.com/animuson
 // @grant       none
 // @match       *://*.stackexchange.com/*
-// @match       *://*.stackoverflow.com/*
+// @match       *://stackoverflow.com/*
+// @match       *://meta.stackoverflow.com/*
 // @match       *://*.superuser.com/*
 // @match       *://*.serverfault.com/*
 // @match       *://*.askubuntu.com/*
@@ -15,7 +16,9 @@
 // ==/UserScript==
 
 $(document).ready(function(e) {
-    if (StackExchange.options.user.isModerator) {
+    if (typeof StackExchange == "undefined") {
+        // Maybe show an error with a button to attempt reload? Do later.
+    } else if (StackExchange.options.user.isModerator) {
         var $posts = $('.question, .answer');
         var modMenu = { 'question': '', 'answer': '' };
 
