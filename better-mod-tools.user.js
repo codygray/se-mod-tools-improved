@@ -2,7 +2,7 @@
 // @name        Stack Exchange Moderator Tools Improved
 // @description Moves the info from the post issues box and moves options out of the mod menu for easier access.
 // @author      animuson
-// @version     0.1.2
+// @version     0.1.3
 // @namespace   https://github.com/animuson
 // @grant       none
 // @match       *://*.stackexchange.com/*
@@ -246,31 +246,20 @@ $(document).ready(function(e) {
             }
             return suboptions;
         };
-    }
-});
-
-$(document).on("DOMNodeInserted", function(e) {
-    var elem = $(e.target);
-    if (elem.hasClass("post-issue")) {
-        var postId = elem.data('postid');
-        var showLink = $('#comments-link-' + postId + ' .js-show-link');
-        var deletedComments = elem.find('.fetch-deleted-comments').text().trim().split(' ')[0];
-        if (deletedComments !== '') {
-            var deletedCommentsLink = '<span class="js-deleted-separator">&nbsp;|&nbsp;</span><a class="fetch-deleted-comments comments-link red-mod-link"><b>' + deletedComments + '</b> deleted</a>';
-            showLink.after(deletedCommentsLink);
+        
+        if (window.location.pathname.substring(0, 9) == "/election") {
+            var $noms = $('[id^=post-]');
+            $noms.each(function() {
+                var $comments = $(this).find('[id^=comments-link-]');
+                var postId = $comments.attr('id').replace('comments-link-', '');
+                $comments.append('<span class="js-deleted-separator">&nbsp;|&nbsp;</span><a class="fetch-deleted-comments comments-link red-mod-link">show deleted</a>');
+            });
         }
-
-        var numberFlags = elem.find('a:first-child:not(.fetch-deleted-comments)').text().trim().split(' ')[0];
-        if (numberFlags !== '') {
-            var voteMenu = elem.parent().find('.vote');
-            var flagsIndicator = '<a href="/admin/posts/' + postId + '/show-flags" class="bounty-award-container" target="_blank"><span class="bounty-award supernovabg" style="font-size: 1em; margin-top: 10px" title="flags on this post">' + numberFlags + '</span></a>';
-            voteMenu.append(flagsIndicator);
-        }
-
-        elem.remove();
-
-        $('.fetch-deleted-comments').click(function() {
-            var postId = $(this).parent().attr('id').replace('comments-link-', '');
+        
+        $('[id^=comments-link-]').on('click', function() {
+            $target = $(event.target);
+            if (!$target.hasClass('fetch-deleted-comments')) return;
+            var postId = $target.parent().attr('id').replace('comments-link-', '');
             $.ajax({
                 'type': 'GET',
                 'url': '/posts/' + postId + '/comments?includeDeleted=true',
@@ -306,6 +295,28 @@ $(document).on("DOMNodeInserted", function(e) {
                 $('#comments-link-' + postId).showErrorMessage("An error has occurred - please retry your request.");
             });
         });
+    }
+});
+
+$(document).on("DOMNodeInserted", function(e) {
+    var elem = $(e.target);
+    if (elem.hasClass("post-issue")) {
+        var postId = elem.data('postid');
+        var showLink = $('#comments-link-' + postId + ' .js-show-link');
+        var deletedComments = elem.find('.fetch-deleted-comments').text().trim().split(' ')[0];
+        if (deletedComments !== '') {
+            var deletedCommentsLink = '<span class="js-deleted-separator">&nbsp;|&nbsp;</span><a class="fetch-deleted-comments comments-link red-mod-link"><b>' + deletedComments + '</b> deleted</a>';
+            showLink.after(deletedCommentsLink);
+        }
+
+        var numberFlags = elem.find('a:first-child:not(.fetch-deleted-comments)').text().trim().split(' ')[0];
+        if (numberFlags !== '') {
+            var voteMenu = elem.parent().find('.vote');
+            var flagsIndicator = '<a href="/admin/posts/' + postId + '/show-flags" class="bounty-award-container" target="_blank"><span class="bounty-award supernovabg" style="font-size: 1em; margin-top: 10px" title="flags on this post">' + numberFlags + '</span></a>';
+            voteMenu.append(flagsIndicator);
+        }
+
+        elem.remove();
     }
 });
 
