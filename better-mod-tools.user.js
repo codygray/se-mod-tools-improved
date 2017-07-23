@@ -135,27 +135,27 @@ $(document).ready(function(e) {
                 $('.bounty-notification .question-status.bounty').append(bountyLink);
             }
         });
-        $('.unlock-post-link').click(function() {
+        $('.unlock-post-link').click(function(event) {
            if (window.confirm(getActionDescription('unlock', getPostType($(this))) + 'Are you sure you want to complete this action?')) {
                completeBasicAction('unlock', $(this), false);
            }
         });
-        $('.wiki-post-link').click(function() {
+        $('.wiki-post-link').click(function(event) {
             if (window.confirm(getActionDescription('wikify', getPostType($(this))) + 'Are you sure you want to complete this action?')) {
                 completeBasicAction('wikify', $(this), false);
             }
         });
-        $('.unwiki-post-link').click(function() {
+        $('.unwiki-post-link').click(function(event) {
             if (window.confirm(getActionDescription('remove-wiki', getPostType($(this))) + 'Are you sure you want to complete this action?')) {
                 completeBasicAction('remove-wiki', $(this), false);
             }
         });
-        $('.purge-comments-link').click(function() {
+        $('.purge-comments-link').click(function(event) {
             if (window.confirm(getActionDescription('delete-comments', getPostType($(this))) + 'Are you sure you want to complete this action?')) {
                 completeBasicAction('delete-comments', $(this), purgeAllComments);
             }
         });
-        $('.remove-bounty-link').click(function() {
+        $('.remove-bounty-link').click(function(event) {
             if (window.confirm(getActionDescription('remove-bounty', getPostType($(this))) + 'Are you sure you want to complete this action?')) {
                 completeBasicAction('remove-bounty', $(this), false);
             }
@@ -256,7 +256,7 @@ $(document).ready(function(e) {
             });
         }
         
-        $('[id^=comments-link-]').on('click', function() {
+        $('[id^=comments-link-]').on('click', function(event) {
             $target = $(event.target);
             if (!$target.hasClass('fetch-deleted-comments')) return;
             var postId = $target.parent().attr('id').replace('comments-link-', '');
@@ -269,7 +269,7 @@ $(document).ready(function(e) {
             }).success(function (data) {
                 $('#comments-' + postId).removeClass('dno');
                 $('#comments-' + postId + ' tbody').html(data);
-                $('#comments-' + postId + ' .undelete-comment').click(function() {
+                $('#comments-' + postId + ' .undelete-comment').click(function(event) {
                     var e = $(this);
                     var comment = e.closest('.comment');
                     var commentId = comment.attr('id').replace('comment-', '');
