@@ -5,7 +5,7 @@ This is a user script which moves most of the options *out* of the mod menu and 
 # Functional
 
 - Adds the protect/unprotect link back to the post options (which is normally hidden from moderators for the spare room).
-- Moves the mod menu link down to the next line and adds (un)lock, merge (for questions), (de)notice, (un)wiki, and convert (for answers) options to the line mod menu line.
+- Moves the mod menu link down to the next line and adds (un)lock, merge (for questions), (de)notice, (un)wiki, and convert (for answers) options to the mod menu line.
 - Revisions and timeline links for the post appear underneath the moderator-action links.
 - The **(un)wiki** option will spawn a confirmation popup before immediately completing the action.
 - A flags indicator will appear under the voting controls at the left of the post indicating the number of flags which have ever been cast on that post (only appears if greater than zero).
@@ -21,8 +21,8 @@ This is a user script which moves most of the options *out* of the mod menu and 
 
 # Not Functional (To Be Done)
 
-- The **(un)lock** option should spawn a popup consisting of the various lock options for that post, or a confirmation popup before immediately unlocking the post.
-- The **merge** option should spawn a popup for meging the question.
+- The **lock** option should spawn a popup consisting of the various lock options for that post.
+- The **merge** option should spawn a richer popup UI, allowing the user to input and lookup the URL/ID of a target master question in order to minimize possible mistakes.
 - The **convert** option should spawn a popup for converting the answer to a comment (and possibly add an option for converting it to an edit also).
-- The **(de)notice** option should spawn a popup consisting of the various post notices for that post, or a confirmation popup before immediately removing the post notice from the post.
+- The **notice** option should spawn a popup consisting of the various post notices for that post.
 - The **move to chat** option should do... uhh... something. I don't know exactly how that function works to begin with.

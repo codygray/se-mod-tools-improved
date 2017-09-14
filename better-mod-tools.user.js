@@ -35,7 +35,8 @@ $(document).ready(function(e) {
             var isWiki = ($(this).find('.user-details .community-wiki').length > 0);
             var isProtected = ($.inArray('protected', statusTypes) >= 0);
             var isLocked = ($.inArray('locked', statusTypes) >= 0);
-            var isClosed = ($.inArray('closed', statusTypes) >= 0 || $.inArray('on hold', statusTypes) >= 0);
+            var isDuplicate = $.inArray('marked', statusTypes) >= 0;
+            var isClosed = (isDuplicate || $.inArray('closed', statusTypes) >= 0 || $.inArray('on hold', statusTypes) >= 0);
             var isDeleted = ($.inArray('deleted', statusTypes) >= 0 || $(this).find('.deleted-answer-info').length > 0);
             var hasBounty = ($(this).find('.bounty-notification').length > 0);
 
@@ -61,7 +62,8 @@ $(document).ready(function(e) {
             // Create convert to comment/edit link
             if (postType == 'answer') {
                 if (!isDeleted) {
-                    convertLink = '<a id="convert-post-' + postId + '" data-postid="' + postId + '" class="convert-answer-link red-mod-link" title="conver answer to comment or edit">convert</a>';
+                    //convertLink = '<a id="convert-post-' + postId + '" data-postid="' + postId + '" class="convert-answer-link red-mod-link" title="convert answer to comment or edit">convert</a>';
+                    convertLink = '<span class="red-mod-disabled" title="convert answer to comment or edit (unimplemented)">convert</span>';
                 } else {
                     convertLink = '<span class="red-mod-disabled" title="cannot convert to comment or edit while deleted">convert</span>';
                 }
@@ -72,7 +74,8 @@ $(document).ready(function(e) {
             if (isLocked) {
                 lockLink = '<a id="unlock-post-' + postId + '" data-postid="' + postId + '" class="unlock-post-link red-mod-link" title="unlock and remove post notice">unlock</a>';
             } else if (!hasPostNotice) { // Attempting to lock with an active post notice will error out - you need to remove it first
-                lockLink = '<a id="lock-post-' + postId + '" data-postid="' + postId + '" class="lock-post-link red-mod-link" title="lock and add optional post notice">lock</a>';
+                //lockLink = '<a id="lock-post-' + postId + '" data-postid="' + postId + '" class="lock-post-link red-mod-link" title="lock and add optional post notice">lock</a>';
+                lockLink = '<span class="red-mod-disabled" title="lock and add optional post notice (unimplemented)">lock</span>';
             } else {
                 lockLink = '<span class="red-mod-disabled" title="post notice must be removed before locking again">lock</span>';
             }
@@ -80,7 +83,7 @@ $(document).ready(function(e) {
 
             // Create merge question link
             if (postType == 'question') {
-                if (isClosed) {
+                if (isDuplicate) {
                     mergeLink = '<a id="merge-post-' + postId + '" data-postid="' + postId + '" class="merge-question-link red-mod-link" title="merge duplicate into another question">merge</a>';
                 } else {
                     mergeLink = '<span class="red-mod-disabled" title="question must be closed as duplicate">merge</span>';
@@ -92,7 +95,8 @@ $(document).ready(function(e) {
             if (hasPostNotice) {
                 noticeLink = '<a id="unnotice-post-' + postId + '" data-postid="' + postId + '" class="unnotice-post-link red-mod-link" title="remove post notice">denotice</a>';
             } else {
-                noticeLink = '<a id="notice-post-' + postId + '" data-postid="' + postId + '" class="notice-post-link red-mod-link" title="add post notice">notice</a>';
+                //noticeLink = '<a id="notice-post-' + postId + '" data-postid="' + postId + '" class="notice-post-link red-mod-link" title="add post notice">notice</a>';
+                noticeLink = '<span class="red-mod-disabled" title="add post notice (unimplemented)">notice</span>';
             }
             postMenu.append(noticeLink);
 
@@ -113,7 +117,8 @@ $(document).ready(function(e) {
             if (hasComments) {
                 var modLinks = $('<div class="mod-action-links" style="float: right; padding-right: 10px"></div>');
                 var separator = '<span>&nbsp;|&nbsp;</span>';
-                var moveLink = '<a id="move-comments-' + postId + '" data-postid="' + postId + '" class="move-comments-link comments-link red-mod-link" title="move all comments to chat and purge">move to chat</a>';
+                //var moveLink = '<a id="move-comments-' + postId + '" data-postid="' + postId + '" class="move-comments-link comments-link red-mod-link" title="move all comments to chat and purge">move to chat</a>';
+                var moveLink = '<span class="red-mod-disabled" title="move all comments to chat and purge (unimplemented)">move to chat</span>';
                 var purgeLink = '<a id="purge-comments-' + postId + '" data-postid="' + postId + '" class="purge-comments-link comments-link red-mod-link" title="delete all comments">purge all</a>';
                 modLinks.append(moveLink);
                 modLinks.append(separator);
@@ -136,9 +141,22 @@ $(document).ready(function(e) {
             }
         });
         $('.unlock-post-link').click(function(event) {
-           if (window.confirm(getActionDescription('unlock', getPostType($(this))) + 'Are you sure you want to complete this action?')) {
+           if (window.confirm('Are you sure you want to unlock this post?')) {
                completeBasicAction('unlock', $(this), false);
            }
+        });
+        $('.merge-question-link').click(function(event) {
+            var masterQuestion = window.prompt(getActionDescription('merge', getPostType($(this))) + 'BE CAREFUL—there is NO VALIDATION implemented here!\n\nID or URL for master question:', '');
+            if ((masterQuestion !== undefined) && (masterQuestion !== null)) {
+                masterQuestion = masterQuestion.trim();
+                if (masterQuestion.length === 0 || !masterQuestion.match(/\d+/)) return;
+                completeMergeAction(masterQuestion, $(this), false);
+            }
+        });
+        $('.unnotice-post-link').click(function(event) {
+            if (window.confirm(getActionDescription('remove-post-notice', getPostType($(this))) + 'Are you sure you want to complete this action?')) {
+                completeBasicAction('remove-post-notice', $(this), false);
+            }
         });
         $('.wiki-post-link').click(function(event) {
             if (window.confirm(getActionDescription('wikify', getPostType($(this))) + 'Are you sure you want to complete this action?')) {
@@ -178,6 +196,36 @@ $(document).ready(function(e) {
                 'url': '/admin/posts/' + postId + '/' + action,
                 'data': {
                     'mod-actions': action,
+                    'fkey': StackExchange.options.user.fkey
+                }
+            }).success(function () {
+                if (callback === false) {
+                    var parentPost = e.closest('.question, .answer');
+                    var currentPath = window.location.pathname.split('/');
+                    currentPath = currentPath.slice(0, 4);
+                    if (parentPost.hasClass('answer')) {
+                        currentPath[4] = postId + '#' + postId;
+                    }
+                    var newPath = currentPath.join('/');
+                    window.location = newPath;
+                } else {
+                    callback(postId);
+                }
+            }).error(function () {
+                e.closest('.post-menu').showErrorMessage("An error has occurred - please retry your request.");
+            });
+            return succeeded;
+        };
+        
+        window.completeMergeAction = function (masterQuestion, e, callback) {
+            var postId = e.data('postid');
+            var succeeded;
+            $.ajax({
+                'type': 'POST',
+                'url': '/admin/posts/' + postId + '/merge',
+                'data': {
+                    'mod-actions': 'merge',
+                    'master-question-id': masterQuestion,
                     'fkey': StackExchange.options.user.fkey
                 }
             }).success(function () {
@@ -242,7 +290,7 @@ $(document).ready(function(e) {
             var postModMenu = checkModMenu(postType);
             var suboptions = '';
             if (postModMenu !== '') {
-                suboptions = postModMenu.find('input[name="mod-actions"][value="' + actionName + '"]').parent().Parent().find('.action-subform').html();
+                suboptions = postModMenu.find('input[name="mod-actions"][value="' + actionName + '"]').parent().parent().find('.action-subform').html();
             }
             return suboptions;
         };
@@ -328,4 +376,4 @@ var sheet = (function() {
 })();
 sheet.insertRule('.post-menu .red-mod-link, .red-mod-link { color: #A44 }', 0);
 sheet.insertRule('.post-menu .red-mod-link:hover, .red-mod-link:hover { color: #600 }', 1);
-sheet.insertRule('.post-menu .red-mod-disabled { color: #C88; padding: 0 3px 2px 3px }', 1);
+sheet.insertRule('.post-menu .red-mod-disabled, .red-mod-disabled { color: #C88; padding: 0 3px 2px 3px }', 1);
