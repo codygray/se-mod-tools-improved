@@ -356,13 +356,35 @@ $(document).on("DOMNodeInserted", function(e) {
             var deletedCommentsLink = '<span class="js-deleted-separator">&nbsp;|&nbsp;</span><a class="fetch-deleted-comments comments-link red-mod-link"><b>' + deletedComments + '</b> deleted</a>';
             showLink.after(deletedCommentsLink);
         }
-
+        
+        var voteMenu = elem.parent().find('.vote');
+        
+        // Add "flag" count badge.
         var numberFlags = elem.find('a:first-child:not(.fetch-deleted-comments)').text().trim().split(' ')[0];
         if (numberFlags !== '') {
-            var voteMenu = elem.parent().find('.vote');
             var flagsIndicator = '<a href="/admin/posts/' + postId + '/show-flags" class="bounty-award-container" target="_blank"><span class="bounty-award supernovabg" style="font-size: 1em; margin-top: 10px" title="flags on this post">' + numberFlags + '</span></a>';
             voteMenu.append(flagsIndicator);
         }
+        
+        // Add "review" count badge.
+        $.ajax({
+            'type': 'GET',
+            'async': true,
+            'url': '/admin/posts/' + postId + '/moderator-menu',
+            'data': {
+                'fkey': StackExchange.options.user.fkey
+            },
+            'success': function (data) {
+                var reviews = $(data).find('input[name="mod-actions"][value="show-reviews"]');
+                if (!reviews.disabled) {
+                    var numberReviews = reviews.siblings('.action-name').find('.mod-flag-indicator').text().trim().split(' ')[0];
+                    if (numberReviews !== '') {
+                        var reviewsIndicator = '<a href="/admin/posts/' + postId + '/show-reviews" class="bounty-award-container" target="_blank"><span class="bounty-award hotbg" style="font-size: 1em; margin-top: 10px" title="review history for this post">' + numberReviews + '</span></a>';
+                        voteMenu.append(reviewsIndicator);
+                    }
+                }
+            }
+        });
 
         elem.remove();
     }

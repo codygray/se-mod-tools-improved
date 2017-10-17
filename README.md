@@ -8,7 +8,8 @@ This is a user script which moves most of the options *out* of the mod menu and 
 - Moves the mod menu link down to the next line and adds (un)lock, merge (for questions), (de)notice, (un)wiki, and convert (for answers) options to the mod menu line.
 - Revisions and timeline links for the post appear underneath the moderator-action links.
 - The **(un)wiki** option will spawn a confirmation popup before immediately completing the action.
-- A flags indicator will appear under the voting controls at the left of the post indicating the number of flags which have ever been cast on that post (only appears if greater than zero).
+- A flags indicator will appear under the voting controls at the left of the post, indicating the number of flags which have ever been cast on that post (only appears if greater than zero).
+- A reviews indicator will also appear under the voting controls at the left of the post, indicating the number of reviews that the post has undergone (only appears if greater than zero).
 - The default moderator info box in the left gutter of a post will be hidden.
 - The "show *x* more comments" option is shortened to just "*x* more comments" below the comment list.
 - Adds options to purge all and move to chat at the bottom right of the comment list.
